@@ -1,6 +1,6 @@
 #include "bomb.h"
 
-extern rgb pallete[8];
+
 
 Bomb::Bomb(const position& place) :Elem(BLACK,place) {
 

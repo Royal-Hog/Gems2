@@ -10,27 +10,29 @@ rgb pallete[8] = {
         {0.0, 1.0, 1.0},
 };
 
-GameTable::GameTable(int mapHi, int mapW) {
+ GameTable::GameTable(int mapHi, int mapW) {
+	 srand(time(0));
 	pos = new position * [mapHi];
-	block = new std::shared_ptr<Elem>*[mapHi];
+	block = new shared_ptr<Elem>*[mapHi];
 	for (int i = 0; i < mapHi; i++) {
 		pos[i] = new position[mapW];
-		block[i] = new std::shared_ptr<Elem>[mapW];
+		block[i] = new shared_ptr<Elem>[mapW];
 	}
 
 	for (int i = 0; i < mapW; i++)
 	{
 		for (int j = 0; j < mapHi; j++)
 		{
-			ColorName rng = ColorName(RED + ColorName(rand()) % (CYAN - RED + 1));
+			ColorName rng = ColorName(RED + rand()%6);
 			pos[i][j] = { i, j };
-			block[i][j] = std::make_shared<Quad>(Quad(rng, pos[i][j]));
+			block[i][j] = make_shared<Quad>(Quad(rng, pos[i][j]));
 		}
 	}
 }
 
 void GameTable::BuildTable()
 {
+
 	glLoadIdentity();
 	glScalef(2.0f / mapW, 2.0f / mapH, 1);
 	glTranslatef(-mapW / 2.0f, -mapH / 2.0f, 0);
@@ -52,31 +54,52 @@ void GameTable::BuildTable()
 
 void GameTable::ReplaceElem()
 {
-	int dx = 1;
-	int dy = 1;
-
+	
 	for (int i = 0; i < mapW; i++) {
 		for (int j = 0; j < mapH; j++) {
 			if (block[i][j]->select) {
-				if (i != mapH - 1 && block[i + dx][j]->select)
+				if (i != mapH - 1 && block[i + 1][j]->select)
 				{
-					std::shared_ptr<Elem> swap = block[i][j];
-					block[i][j] = block[i + dx][j];
+					
+					
+				
+					shared_ptr<Elem> swap = block[i][j];
+					block[i][j] = block[i + 1][j];
 					block[i][j]->select = false;
-					block[i + dx][j] = swap;
-					block[i + dx][j]->select = false;
+					block[i + 1][j] = swap;
+					block[i + 1][j]->select = false;
+				
+					if ((CheckColumnsTable() + CheckRowsTable()) == 0) {
+						swap = block[i][j];
+						block[i][j] = block[i + 1][j];
+						
+						block[i + 1][j] = swap;
+						
+
+					}
+
 				}
-				else if (j != mapH - 1 && block[i][j + dy]->select)
+				else if (j != mapH - 1 && block[i][j + 1]->select)
 				{
-					std::shared_ptr<Elem> swap = block[i][j];
-					block[i][j] = block[i][j + dy];
+					shared_ptr<Elem> swap = block[i][j];
+					block[i][j] = block[i][j + 1];
 					block[i][j]->select = false;
-					block[i][j + dy] = swap;
-					block[i][j + dy]->select = false;
+					block[i][j + 1] = swap;
+					block[i][j + 1]->select = false;
+
+					if ((CheckColumnsTable() + CheckRowsTable()) == 0) {
+						swap = block[i][j];
+						block[i][j] = block[i ][j+1];
+
+						block[i][j+1] = swap;
+
+
+					}
 				}
 			}
 		}
 	}
+
 }
 
 void GameTable::BOOM() {
@@ -93,8 +116,9 @@ void GameTable::KaBOOM() {
 		for (int y = 0; y < mapH; y++) {
 			if (block[x][y]->select && IsColorEqColor(pallete[BLACK], { x,y })) {
 				block[x][y]->select = false;
-				PushUpAndRecolour({x, y});
+				PushUpAndRecolour({ x, y });
 				BOOM();
+			
 			}
 
 		}
@@ -138,38 +162,37 @@ void GameTable::PushUpAndRecolour(const position& posToUp)
 	
 	for (; y < mapH - 1; y++)
 	{
-		std::swap(block[x][y], block[x][y + 1]);
+		swap(block[x][y], block[x][y + 1]);
 	}
-	block[x][y]->color = pallete[ColorName(RED + ColorName(rand()) % (CYAN - RED + 1))];
+	if (!IsColorEqColor(pallete[ColorName(BLACK)], { x,y })) {
+		block[x][y]->color = pallete[ColorName(RED + rand() % 6)];
+	}
+	else {
+		block[x][y]= make_shared<Quad>(Quad(ColorName(RED + rand() % 6), pos[x][y]));
+	}
+
+	
 }
 
-const int BonusChance = 10;
+const int BonusChance = 11;
 
 const int BombChance = 2;
 
 void GameTable::CreateBonus(const position& posToBonus) {
 	int x = posToBonus.x, y = posToBonus.y;
-	if (y == mapH - 1) {
+	if (y != mapH - 1) {
 		rgb recolorSave = block[x][y]->color;
 		if (rand() % BombChance == 1) {
-			block[x][y].reset(new Bomb({ x,y }));
-		}
-		else
-			block[x][y].reset(new reColour(recolorSave, { x, y }));
-		return;
-	}
-	else {
-		rgb recolorSave = block[x][y]->color;
-		if (rand() % BombChance == 1) {
-			block[x][y + 1].reset(new Bomb({x,y+1}));
+			block[x][y + 1].reset(new Bomb({ x,y + 1 }));
 		}
 		else
 			block[x][y + 1].reset(new reColour(recolorSave, { x, y + 1 }));
 	}
+	
 }
 
 void GameTable::BrokeElem(const position& posToUp) {
-	std::shared_ptr<Elem> swap;
+	shared_ptr<Elem> swap;
 	int x = posToUp.x, y = posToUp.y;
 	if (rand() % BonusChance == 1) {
 		CreateBonus({ x,y });
@@ -184,13 +207,14 @@ inline void GameTable::PushStack(std::stack<position>& stackToUp) {
 			stackToUp.pop();
 		}
 	}
-}
-
-inline void GameTable::FreeStack(std::stack<position>& stackToFree) {
-	while (!stackToFree.empty()) {
-		stackToFree.pop();
+	else {
+		while (!stackToUp.empty()) {
+			stackToUp.pop();
+		}
 	}
 }
+
+
 
 bool GameTable::IsColorEqColor(const rgb& currentColor, const position& posElem) {
 	return (currentColor.red == block[posElem.x][posElem.y]->color.red &&
@@ -198,50 +222,60 @@ bool GameTable::IsColorEqColor(const rgb& currentColor, const position& posElem)
 		currentColor.blue == block[posElem.x][posElem.y]->color.blue);
 }
 
-void GameTable::CheckColumnsTable() {
-	std::stack<position> posToUp;
+int GameTable::CheckColumnsTable() {
+	stack<position> posToUp;
 	rgb currentColor;
+	int replacements=0;
+	int eqcolor;
 	for (int x = 0; x < mapW; x++) {
 		PushStack(posToUp);
-		FreeStack(posToUp);
+		eqcolor = 0;
 		currentColor = block[x][0]->color;
 		posToUp.push({ x,0 });
 		for (int y = 1; y < mapH; y++) {
 			if (IsColorEqColor(currentColor, { x,y }))
 			{
 				posToUp.push({ x,y });
+				eqcolor++;
+				if(eqcolor==3)replacements++;
 			}
 			else
 			{
 				PushStack(posToUp);
-				FreeStack(posToUp);
+				eqcolor = 0;
 				currentColor = block[x][y]->color;
 				posToUp.push({ x,y });
 			}
 		}
 	}
 	PushStack(posToUp);
+	return replacements;
 }
 
-void GameTable::CheckRowsTable()
+int GameTable::CheckRowsTable()
 {
-	std::stack<position> posToUp;
+	int replacements=0;
+	int eqcolor;
+	stack<position> posToUp;
 	rgb currentColor;
 	for (int y = 0; y < mapH; y++) {
 		PushStack(posToUp);
-		FreeStack(posToUp);
 
+		eqcolor = 0;
 		currentColor = block[0][y]->color;
 		posToUp.push({ 0,y });
 		for (int x = 1; x < mapW; x++) {
 			if (IsColorEqColor(currentColor, { x,y }))
 			{
 				posToUp.push({ x,y });
+				eqcolor++;
+				if (eqcolor == 3)replacements++;
+				
 			}
 			else
 			{
 				PushStack(posToUp);
-				FreeStack(posToUp);
+				eqcolor = 0;
 
 				currentColor = block[x][y]->color;
 				posToUp.push({ x,y });
@@ -249,4 +283,5 @@ void GameTable::CheckRowsTable()
 		}
 	}
 	PushStack(posToUp);
+	return replacements;
 }

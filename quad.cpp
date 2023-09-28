@@ -1,14 +1,12 @@
 #include "quad.h"
-extern rgb pallete[8];
+
 
 Quad::Quad(const rgb& newColor,const position& place): Elem(newColor,place)  {
-   // color=newColor;
-   // pos=place;
+ 
 }
 
 Quad::Quad(const ColorName& name,const position& place): Elem(name, place){
-    //color = colors::pallete[name];
-    //pos=place;
+  
 }
 
 void Quad::DrawElem() {

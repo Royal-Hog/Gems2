@@ -1,16 +1,8 @@
 #pragma once
-#ifndef QUAD_H
-#define QUAD_H
+
 #include "elem.h"
-#include <iostream>
-#include <vector>
-#include <cstdio>
-#include <cstdlib>
-#include <stack>
-#include <windows.h>
-#include <gl/gl.h>
-#include <math.h>
-//#include "gametable.h"
+
+
 
 
 class Quad : public Elem
@@ -21,4 +13,3 @@ public:
 	void DrawElem();
 
 };
-#endif

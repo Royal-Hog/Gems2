@@ -1,9 +1,8 @@
 #include "recolor.h"
-extern rgb pallete[8];
+
 reColour::reColour(const rgb& prevCol, const position& place):Elem(WHITE,place) {
 	lastColor = prevCol;
-   // color = colors::pallete[WHITE];
-    //pos=place;
+  
 }
 
 

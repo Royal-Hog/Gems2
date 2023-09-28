@@ -21,6 +21,7 @@ CMakeFiles\GEMS_main.dir\gametable.cpp.obj: ..\recolor.h
 CMakeFiles\GEMS_main.dir\main.cpp.obj: ..\bomb.h
 CMakeFiles\GEMS_main.dir\main.cpp.obj: ..\elem.h
 CMakeFiles\GEMS_main.dir\main.cpp.obj: ..\gametable.h
+CMakeFiles\GEMS_main.dir\main.cpp.obj: ..\init.h
 CMakeFiles\GEMS_main.dir\main.cpp.obj: ..\main.cpp
 CMakeFiles\GEMS_main.dir\main.cpp.obj: ..\pallete.h
 CMakeFiles\GEMS_main.dir\main.cpp.obj: ..\quad.h

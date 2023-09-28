@@ -121,11 +121,13 @@
     <ClCompile Include="main.cpp" />
     <ClCompile Include="quad.cpp" />
     <ClCompile Include="recolor.cpp" />
+    <ClCompile Include="init.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="bomb.h" />
     <ClInclude Include="elem.h" />
     <ClInclude Include="gametable.h" />
+    <ClInclude Include="init.h" />
     <ClInclude Include="pallete.h" />
     <ClInclude Include="quad.h" />
     <ClInclude Include="recolor.h" />

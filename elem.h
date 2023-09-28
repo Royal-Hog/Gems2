@@ -1,7 +1,4 @@
 #pragma once
-#ifndef ELEM_H
-#define ELEM_H
-
 
 #include "pallete.h"
 #include <iostream>
@@ -32,4 +29,3 @@ public:
 	virtual rgb GetColor();
 
 };
-#endif

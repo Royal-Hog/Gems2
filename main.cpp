@@ -17,7 +17,6 @@ int WINAPI WinMain(HINSTANCE hInstance,
 	BOOL bQuit = FALSE;
 	float theta = 0.0f;
 
-	/* register window class */
 	wcex.cbSize = sizeof(WNDCLASSEX);
 	wcex.style = CS_OWNDC;
 	wcex.lpfnWndProc = WindowProc;
@@ -35,7 +34,7 @@ int WINAPI WinMain(HINSTANCE hInstance,
 	RegisterClassEx(&wcex);
 		
 
-	/* create main window */
+
 	hwnd = CreateWindowEx(0,
 		"GLSample",
 		"OpenGL Sample",
@@ -53,14 +52,13 @@ int WINAPI WinMain(HINSTANCE hInstance,
 
 
 
-	/* enable OpenGL for the window */
 	EnableOpenGL(hwnd, &hDC, &hRC);
 	map = new GameTable(mapH, mapW);
 
 
 	while (!bQuit)
 	{
-		/* check for messages */
+
 		if (PeekMessage(&msg, NULL, 0, 0, PM_REMOVE))
 		{
 		
@@ -70,13 +68,13 @@ int WINAPI WinMain(HINSTANCE hInstance,
 			}
 			else
 			{
-				//TranslateMessage(&msg);
+				
 				DispatchMessage(&msg);
 			}
 		}
 		else
 		{ 
-			/* OpenGL animation code goes here */
+
 
 			glClearColor(0.7f, 1.0f, 0.7f, 0.0f);
 			glClear(GL_COLOR_BUFFER_BIT);
@@ -94,10 +92,9 @@ int WINAPI WinMain(HINSTANCE hInstance,
 		}
 	}
 
-	/* shutdown OpenGL */
 	DisableOpenGL(hwnd, hDC, hRC);
 
-	/* destroy the window explicitly */
+
 	DestroyWindow(hwnd);
 
 	return msg.wParam;
